@@ -11,19 +11,22 @@
 <script type="text/javascript" charset="utf-8">
 bs.plugin( 'markdown' );
 bs(function(){
-	var bsJSDOC, bsPHPDOC;
+	var DOCS = [
+		{title:"bsJS", uri:"./bsJS/bsJS.json"},
+		{title:"bsPHP", uri:"./bsPHP/bsPHP.json"}
+	], doc, i;
 	/*var rootJS = bs.markdown( markdown0 = bs.get( null, 'bs.markdown.html' ) );
 	var rootPHP = bs.markdown( markdown0 = bs.get( null, 'bs.markdown.html' ) );*/
-	bs.get(function(rs){
-		if( !rs ) console.error('bsJS.json 파일이 없습니다.');
-		bsJSDOC = JSON.parse(rs);
-		console.log(bsJSDOC);
-	}, './bsJS/bsJS.json');
-	bs.get(function(rs){
-		if( !rs ) console.error('bsPHP.json 파일이 없습니다.');
-		bsPHPDOC = JSON.parse(rs);
-		console.log(bsPHPDOC);
-	}, './bsPHP/bsPHP.json');
+	for( i = 0; i < DOCS.length; i++ ){
+		doc = DOCS[i];
+		(function(doc){
+			bs.get(function(rs){
+				if( !rs ) console.error( doc.title + '.json 파일이 없습니다.' );
+				doc.doc = JSON.parse(rs);
+			}, doc.uri);
+		})(doc);
+	}
+	console.log(DOCS);
 });
 </script>
 </body>
