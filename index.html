@@ -14,7 +14,24 @@ bs(function(){
 	var DOCS = [
 		{title:"bsJS", uri:"./bsJS/bsJS.json"},
 		{title:"bsPHP", uri:"./bsPHP/bsPHP.json"}
-	], doc, i;
+	], doc, render, i;
+	render = function(d){
+		var ver, items, item, links, link, id;
+		//console.log(d)
+		for(ver in d.doc){
+			id = d.title + ver;
+			bs.Dom('#stage').S('>', '<div id="' + id + '=-+">');
+			bs.Dom('#stage').S('>', '<h1>' + d.title + ver + '</h1>');
+			items = d.doc[ver];
+			for(item in items){
+				console.log(item);
+				links = items[item];
+				for(link in links){
+					console.log(link);
+				}
+			}
+		}
+	};
 	/*var rootJS = bs.markdown( markdown0 = bs.get( null, 'bs.markdown.html' ) );
 	var rootPHP = bs.markdown( markdown0 = bs.get( null, 'bs.markdown.html' ) );*/
 	for( i = 0; i < DOCS.length; i++ ){
@@ -23,10 +40,11 @@ bs(function(){
 			bs.get(function(rs){
 				if( !rs ) console.error( doc.title + '.json 파일이 없습니다.' );
 				doc.doc = JSON.parse(rs);
+				render(doc);
 			}, doc.uri);
 		})(doc);
 	}
-	console.log(DOCS);
+	
 });
 </script>
 </body>
