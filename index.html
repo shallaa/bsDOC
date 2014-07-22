@@ -1,10 +1,30 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<title>Untitled</title>
+<title>작성중..</title>
 <meta charset="utf-8"/>
 </head>
 <body>
-	
+<div id="stage"></div>
+<script src="../bsJS/bsjs.0.5.js"></script>
+
+<script type="text/javascript" charset="utf-8">
+bs.plugin( 'markdown' );
+bs(function(){
+	var bsJSDOC, bsPHPDOC;
+	/*var rootJS = bs.markdown( markdown0 = bs.get( null, 'bs.markdown.html' ) );
+	var rootPHP = bs.markdown( markdown0 = bs.get( null, 'bs.markdown.html' ) );*/
+	bs.get(function(rs){
+		if( !rs ) console.error('bsJS.json 파일이 없습니다.');
+		bsJSDOC = JSON.parse(rs);
+		console.log(bsJSDOC);
+	}, './bsJS/bsJS.json');
+	bs.get(function(rs){
+		if( !rs ) console.error('bsPHP.json 파일이 없습니다.');
+		bsPHPDOC = JSON.parse(rs);
+		console.log(bsPHPDOC);
+	}, './bsPHP/bsPHP.json');
+});
+</script>
 </body>
 </html>
