@@ -3,9 +3,15 @@
 <head>
 <title>작성중..</title>
 <meta charset="utf-8"/>
+<style type="text/css">
+#stage{
+	float:left;
+}
+</style>
 </head>
 <body>
 <div id="stage"></div>
+<div id="contents">aa</div>
 <script src="../bsJS/bsjs.0.5.js"></script>
 
 <script type="text/javascript" charset="utf-8">
@@ -14,37 +20,42 @@ bs(function(){
 	var DOCS = [
 		{title:"bsJS", uri:"./bsJS/bsJS.json"},
 		{title:"bsPHP", uri:"./bsPHP/bsPHP.json"}
-	], doc, render, i;
-	render = function(d){
-		var ver, items, item, links, link, id;
+	], doc, mk, md, i;
+	md = function( title, ver, item, uri ){
+		uri = "./" + [title, ver, item, uri].join('/');
+		return function(){
+			console.log( bs.get( null, uri ).replace(/\n|\r\n|\r/gm, '\n').replace(/^(.*)$\n={6,}/gm, '<h1>$1</h1>' ) );
+			bs.Dom('#contents').S( 'html', bs.markdown( bs.get( null, uri ) ) )
+		}
+	};
+	mk = function(d){
+		var ver, items, item, links, link, id, t0;
+		bs.Dom('#stage').S('>', bs.tmpl( '<h1>@title@</h1><ul id="@title@"></ul>', {title : d.title} ) );
 		//console.log(d)
 		for(ver in d.doc){
-			id = d.title + ver;
-			bs.Dom('#stage').S('>', '<div id="' + id + '=-+">');
-			bs.Dom('#stage').S('>', '<h1>' + d.title + ver + '</h1>');
+			t0 = bs.Dom( '#' + d.title ).S('>', bs.tmpl( '<li>v.@ver@</li>', {ver : ver} ) );
+			id = d.title + ver.replace('.', '');
+			bs.Dom( t0 = t0[0] ).S('>', bs.tmpl( '<ul id="@id@"></ul>', {id : id} ) );
 			items = d.doc[ver];
 			for(item in items){
-				console.log(item);
+				t0 = bs.Dom( '#'+id ).S('>', bs.tmpl( '<li>@item@</li>', {item : item} ) );
+				bs.Dom( t0 = t0[0] ).S('>', bs.tmpl( '<ul id="@id@"></ul>', {id : id+item} ) );
 				links = items[item];
 				for(link in links){
-					console.log(link);
+					//bs.Dom( '#'+id+item ).S('>', bs.tmpl( '<li><a href="@href@">@link@</a></li>', {link:link, href:links[link]} ) );
+					t0 = bs.Dom( '#'+id+item ).S( '>', bs.tmpl( '<li>@link@</li>', {link : link} ) );
+					bs.Dom( t0[0] ).S('click', md( d.title, ver, item, links[link] ) );
 				}
 			}
 		}
 	};
-	/*var rootJS = bs.markdown( markdown0 = bs.get( null, 'bs.markdown.html' ) );
-	var rootPHP = bs.markdown( markdown0 = bs.get( null, 'bs.markdown.html' ) );*/
 	for( i = 0; i < DOCS.length; i++ ){
 		doc = DOCS[i];
-		(function(doc){
-			bs.get(function(rs){
-				if( !rs ) console.error( doc.title + '.json 파일이 없습니다.' );
-				doc.doc = JSON.parse(rs);
-				render(doc);
-			}, doc.uri);
-		})(doc);
+		rs = bs.get(null, doc.uri);
+		if( !rs ) console.error( doc.title + '.json 파일이 없습니다.' );
+		doc.doc = JSON.parse(rs);
+		mk(doc);
 	}
-	
 });
 </script>
 </body>
