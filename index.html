@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<title>작성중..</title>
+<title>bsDOC Home</title>
 <meta charset="utf-8"/>
 <style type="text/css">
 #stage{
@@ -17,17 +17,18 @@
 <script type="text/javascript" charset="utf-8">
 bs.plugin( 'markdown' );
 bs(function(){
-	var DOCS = [
+	var DOCS, doc, mk, md, i;
+	DOCS = [
 		{title:"bsJS", uri:"./bsJS/bsJS.json"},
 		{title:"bsPHP", uri:"./bsPHP/bsPHP.json"}
-	], doc, mk, md, i;
+	],
 	md = function( title, ver, item, uri ){
+		var cache = {};
 		uri = "./" + [title, ver, item, uri].join('/');
 		return function(){
-			console.log( bs.get( null, uri ).replace(/\n|\r\n|\r/gm, '\n').replace(/^(.*)$\n={6,}/gm, '<h1>$1</h1>' ) );
-			bs.Dom('#contents').S( 'html', bs.markdown( bs.get( null, uri ) ) )
+			bs.Dom('#contents').S( 'html', cache[uri] ? cache[uri] : cache[uri] = bs.markdown( bs.get( null, uri ) ) )
 		}
-	};
+	},
 	mk = function(d){
 		var ver, items, item, links, link, id, t0;
 		bs.Dom('#stage').S('>', bs.tmpl( '<h1>@title@</h1><ul id="@title@"></ul>', {title : d.title} ) );
@@ -42,7 +43,6 @@ bs(function(){
 				bs.Dom( t0 = t0[0] ).S('>', bs.tmpl( '<ul id="@id@"></ul>', {id : id+item} ) );
 				links = items[item];
 				for(link in links){
-					//bs.Dom( '#'+id+item ).S('>', bs.tmpl( '<li><a href="@href@">@link@</a></li>', {link:link, href:links[link]} ) );
 					t0 = bs.Dom( '#'+id+item ).S( '>', bs.tmpl( '<li>@link@</li>', {link : link} ) );
 					bs.Dom( t0[0] ).S('click', md( d.title, ver, item, links[link] ) );
 				}
@@ -50,10 +50,10 @@ bs(function(){
 		}
 	};
 	for( i = 0; i < DOCS.length; i++ ){
-		doc = DOCS[i];
-		rs = bs.get(null, doc.uri);
+		doc = DOCS[i],
+		rs = bs.get( null, doc.uri );
 		if( !rs ) console.error( doc.title + '.json 파일이 없습니다.' );
-		doc.doc = JSON.parse(rs);
+		doc.doc = JSON.parse(rs),
 		mk(doc);
 	}
 });
