@@ -18,6 +18,7 @@
 bs.plugin( 'markdown' );
 bs(function(){
 	var DOCS, doc, mk, md, i;
+	bs.router( 'path', 'controller/path.json', 'start' );
 	DOCS = [
 		{title:"bsJS", uri:"./bsJS/bsJS.json"},
 		{title:"bsPHP", uri:"./bsPHP/bsPHP.json"}
