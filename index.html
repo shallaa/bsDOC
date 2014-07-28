@@ -13,50 +13,10 @@
 <div id="stage"></div>
 <div id="contents">aa</div>
 <script src="../bsJS/bsjs.0.5.js"></script>
-
 <script type="text/javascript" charset="utf-8">
 bs.plugin( 'markdown' );
 bs(function(){
-	var DOCS, doc, mk, md, i;
 	bs.router( 'path', 'controller/path.json', 'start' );
-	DOCS = [
-		{title:"bsJS", uri:"./bsJS/bsJS.json"},
-		{title:"bsPHP", uri:"./bsPHP/bsPHP.json"}
-	],
-	md = function( title, ver, item, uri ){
-		var cache = {};
-		uri = "./" + [title, ver, item, uri].join('/');
-		return function(){
-			bs.Dom('#contents').S( 'html', cache[uri] ? cache[uri] : cache[uri] = bs.markdown( bs.get( null, uri ) ) )
-		}
-	},
-	mk = function(d){
-		var ver, items, item, links, link, id, t0;
-		bs.Dom('#stage').S('>', bs.tmpl( '<h1>@title@</h1><ul id="@title@"></ul>', {title : d.title} ) );
-		//console.log(d)
-		for(ver in d.doc){
-			t0 = bs.Dom( '#' + d.title ).S('>', bs.tmpl( '<li>v.@ver@</li>', {ver : ver} ) );
-			id = d.title + ver.replace('.', '');
-			bs.Dom( t0 = t0[0] ).S('>', bs.tmpl( '<ul id="@id@"></ul>', {id : id} ) );
-			items = d.doc[ver];
-			for(item in items){
-				t0 = bs.Dom( '#'+id ).S('>', bs.tmpl( '<li>@item@</li>', {item : item} ) );
-				bs.Dom( t0 = t0[0] ).S('>', bs.tmpl( '<ul id="@id@"></ul>', {id : id+item} ) );
-				links = items[item];
-				for(link in links){
-					t0 = bs.Dom( '#'+id+item ).S( '>', bs.tmpl( '<li>@link@</li>', {link : link} ) );
-					bs.Dom( t0[0] ).S('click', md( d.title, ver, item, links[link] ) );
-				}
-			}
-		}
-	};
-	for( i = 0; i < DOCS.length; i++ ){
-		doc = DOCS[i],
-		rs = bs.get( null, doc.uri );
-		if( !rs ) console.error( doc.title + '.json 파일이 없습니다.' );
-		doc.doc = JSON.parse(rs),
-		mk(doc);
-	}
 });
 </script>
 </body>
