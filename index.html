@@ -12,8 +12,8 @@
 <div id="preloader">Loading...</div>
 <div id="stage">
 	<h1>projectBS Document System</h1>
-	<div id="left"><div id="contents"></div></div>
-	<div id="right"><div id="doc"></div></div>
+	<div id="left"><div id="contents">Load</div></div>
+	<div id="right"><div id="doc">Select Contents</div></div>
 </div>
 <script src="../bsJS/bsjs.0.5.js"></script>
 <script>
@@ -23,6 +23,7 @@ bs(function(){
 	load = function(v){
 		bs.get( function(data){
 			var str, t0, key, items = {}, menu = [];
+			if( !k ) bs.Dom('#contents').S( 'html', '' );
 			index[v] = t0 = JSON.parse(data);
 			str = '<div>' + v + ' <select id="' + v + '_ver"><option value="">version</option>';
 			for( key in t0 ) str += '<option value="' + key + '">' + key + '</option>', items[key] = t0[key];
