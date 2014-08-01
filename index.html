@@ -4,20 +4,58 @@
 <title>bsDOC Home</title>
 <meta charset="utf-8"/>
 <style type="text/css">
-#stage{
-	float:left;
-}
+h1{text-align:center;font-size:1.5em}
+#stage{margin:0 auto;width:100%;max-width:960px}
+#left{width:20%;float:left;font-size:1em;overflow:hidden;background:#eee}
+#contents{margin:0.5em}
+#right{width:80%;float:left;font-size:1.2em;overflow:hidden}
+#doc{margin:0.5em}
 </style>
 </head>
 <body>
-<div id="stage"></div>
-<div id="contents">aa</div>
+<div id="stage">
+	<h1>projectBS Document System</h1>
+	<div id="left"><div id="contents"></div></div>
+	<div id="right"><div id="doc"></div></div>
+</div>
 <script src="../bsJS/bsjs.0.5.js"></script>
-<script type="text/javascript" charset="utf-8">
+<script>
 bs.plugin( 'markdown' );
 bs(function(){
-	var gT0 = 1;
-	bs.router( 'path', 'controller/path.json', 'start' );
+	var index = {}, start, load, t0 = 'bsJS,bsPHP'.split(','), i = 0, j = t0.length, k = 0;
+	load = function(v){
+		bs.get( function(data){
+			var str, t0, key, items = {}, menu = [];
+			index[v] = t0 = JSON.parse(data);
+			str = '<div>' + v + ' <select id="' + v + '_ver"><option value="">version</option>';
+			for( key in t0 ) str += '<option value="' + key + '">' + key + '</option>', items[key] = t0[key];
+			bs.Dom(str + '</select>').S( '<', '#contents', 'change', function(e){
+				var str, ver = bs.Dom('#' + v + '_ver').S('@value'), t0 = items[ver], t1 = [], i, j;
+				if( !t0 ) return bs.Dom('#' + v + '_list').S('html','');
+				for( i in t0 ) t1[t1.length] = i;
+				for( str = '', t1.sort(), i = 0, j = t1.length ; i < j ; i++ ){
+					str += '<div>' + t1[i] + '</div><ul>';
+					for( t2 = t0[t1[i]], k = 0, l = t2.length ; k < l ; k++ ){
+						str += '<li data-path="' + v + '/' + ver + '/' + t1[i].split('.')[1] + '/' + t2[k] + '">' + t2[k] + '</li>';
+					}
+					str += '</ul>'
+				}
+				bs.Dom('#' + v + '_list').S( 'html', str );
+				bs.Dom('[data-path^=' + v + ']').S( 'cursor', 'pointer', 'down', function(e){
+					bs.get( function(data){
+						bs.Dom('#doc').S( 'html', bs.markdown(data) );
+					}, bs.Dom(this).S('*path')+'.html' );
+				} );
+			} );
+			bs.Dom('<ul id="' + v + '_list"></ul>').S( '<', '#contents' );
+			console.log( v );
+			if( ++k == j ) setTimeout( start, 1 );
+		}, v + '/index.json' );
+	};
+	while( i < j ) load(t0[i++]);
+	start = function(){
+		bs.router( 'path', 'controller/path.json', 'start' );
+	}
 });
 </script>
 </body>
