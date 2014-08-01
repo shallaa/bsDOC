@@ -1,26 +1,58 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<title>bsDOC Home</title>
+<title>bsDOC - projectBS Document System</title>
+<meta name="keywords" content="bs5" />
+<meta name="description" content="bs5 Test suite" />
 <meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+<link rel="shortcut icon" href="http://blog.bsidesoft.com/favicon.ico" type="image/x-icon">
+</head>
+<body>
+
 <style type="text/css">
 #preloader{font-size:1em;text-align:center;margin:auto}
 #stage{display:none}
 </style>
-</head>
-<body>
+
 <div id="preloader">Loading...</div>
 <div id="stage">
 	<h1>projectBS Document System</h1>
 	<div id="left"><div id="contents">Load</div></div>
 	<div id="right"><div id="doc">Select Contents</div></div>
 </div>
-<script src="../bsJS/bsjs.0.5.js"></script>
-<script>
-bs.plugin('markdown');
+
+<script src="../bsJS/bsjs.0.5.js"></script><script>
+bs.plugin('markdown'),
 bs(function(){
-	var index = {}, start, load, t0 = 'bsJS,bsPHP'.split(','), i = 0, j = t0.length, k = 0;
-	load = function(v){
+	
+	SUB_PROJECTS:
+	var PROJECT = 'bsJS,bsPHP';
+	
+	STARTER:
+	var start = function(){
+		
+		CSS:
+		bs.Css('h1').S( 'text-align', 'center', 'font-size', '1.5em' ),
+		bs.Css('#stage').S( 'margin', '0 auto', 'width', '100%', 'max-width', '960px' ),
+		bs.Css('#left').S( 'width', '20%', 'float', 'left', 'font-size', '1em', 'overflow', 'hidden', 'background', '#eee' ),
+		bs.Css('#contents').S( 'margin', '0.5em' ),
+		bs.Css('#right').S( 'width', '80%', 'float', 'left', 'font-size', '1.2em', 'overflow', 'hidden' ),
+		bs.Css('#doc').S( 'margin', '0.5em' );
+		
+		OPEN:
+		bs.Dom('#preloader').S( 'display', 'none' ),
+		bs.Dom('#stage').S( 'display', 'block' );
+		
+		ROUTING:
+		bs.router( 'path', 'controller/path.json', 'start', function(){} );
+		
+	},
+	loader = function(v){
 		bs.get( function(data){
 			var str, t0, key, items = {}, menu = [];
 			if( !k ) bs.Dom('#contents').S( 'html', '' );
@@ -44,21 +76,13 @@ bs(function(){
 				} );
 			} );
 			bs.Dom('<ul id="' + v + '_list"></ul>').S( '<', '#contents' );
-			if( ++k == j ) setTimeout( start, 1 );
+			if( ++k == j ) start();
 		}, v + '/index.json' );
-	};
-	while( i < j ) load(t0[i++]);
-	start = function(){
-		bs.Css('h1').S( 'text-align', 'center', 'font-size', '1.5em' ),
-		bs.Css('#stage').S( 'margin', '0 auto', 'width', '100%', 'max-width', '960px' ),
-		bs.Css('#left').S( 'width', '20%', 'float', 'left', 'font-size', '1em', 'overflow', 'hidden', 'background', '#eee' ),
-		bs.Css('#contents').S( 'margin', '0.5em' ),
-		bs.Css('#right').S( 'width', '80%', 'float', 'left', 'font-size', '1.2em', 'overflow', 'hidden' ),
-		bs.Css('#doc').S( 'margin', '0.5em' ),
-		bs.Dom('#preloader').S( 'display', 'none' ),
-		bs.Dom('#stage').S( 'display', 'block' ),
-		bs.router( 'path', 'controller/path.json', 'start' );
-	}
+	}, index = {}, t0, i, j, k;  
+	
+	LOADING:
+	t0 = PROJECT.split(','), i = 0, j = t0.length, k = 0;
+	while( i < j ) loader(t0[i++]);
 });
 </script>
 </body>
