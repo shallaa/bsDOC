@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
 <title>bsDOC - projectBS Document System</title>
-<meta name="keywords" content="bs5" />
-<meta name="description" content="bs5 Test suite" />
+<meta name="keywords" content="bsDOC" />
+<meta name="description" content="bsDOC - projectBS Document System" />
 <meta charset="utf-8"/>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="format-detection" content="telephone=no" />
@@ -25,6 +25,7 @@
 	<div id="left"><div id="contents">Load</div></div>
 	<div id="right"><div id="doc"></div></div>
 </div>
+
 <script src="../bsJS/bsjs.0.5.js"></script><script>
 bs.plugin('markdown'),
 bs(function(){
@@ -34,15 +35,14 @@ bs(function(){
 	
 	STARTER:
 	var start = function(){
-		var intro;
 		
 		CSS:
 		bs.Css('h1').S( 'text-align', 'center', 'font-size', '1.5em' ),
 		bs.Css('#stage').S( 'margin', '0 auto', 'width', '100%', 'max-width', '960px' ),
-		bs.Css('#left').S( 'width', '20%', 'float', 'left', 'font-size', '1em', 'overflow', 'hidden', 'background', '#eee' ),
-		bs.Css('#contents').S( 'margin', '0.5em' ),
-		bs.Css('#right').S( 'width', '80%', 'float', 'left', 'font-size', '1.2em', 'overflow', 'hidden' ),
-		bs.Css('#doc').S( 'margin', '0.5em' );
+		bs.Css('#left').S( 'width', '20%', 'float', 'left', 'font-size', '1em', 'background', '#eee' ),
+		bs.Css('#contents').S( 'overflow', 'hidden', 'margin', '0.5em' ),
+		bs.Css('#right').S( 'width', '80%', 'float', 'left', 'font-size', '1.2em' ),
+		bs.Css('#doc').S( 'overflow', 'hidden', 'margin', '0.5em' );
 		
 		OPEN:
 		bs.Dom('#preloader').S( 'display', 'none' ),
@@ -51,10 +51,12 @@ bs(function(){
 		ROUTING:
 		base = location.pathname, base = base.substr( base.lastIndexOf('/') + 1 ) + '#!',
 		bs.router( 'path', 'controller/path.json', 'start', function(){location.hash ? bs.router('change') : location.href = base + 'intro';} );
+		
 	},
 	loader = function(v){
 		bs.get( function(data){
-			var str, t0, key, items = {}, menu = [];
+			var items = {}, menu = [], str, key, t0;
+			
 			index[v] = t0 = JSON.parse(data);
 			if( !k ) bs.Dom('#contents').S( 'html', '' );
 			str = '<div>' + v + ' <select id="' + v + '_ver"><option value="">version</option>';

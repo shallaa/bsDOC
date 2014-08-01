@@ -1,0 +1,42 @@
+#### # element Style
+```
+// GET
+bs.Dom(xxx).S( 'style property' );
+// SET
+bs.Dom(xxx).S( 'style property', value );
+```
+* css 방식으로 키를 지정 ```backgroundColor(×), background-color(○)```
+* 벤더 프리픽스는 사용하지 않음 ```-webkit-border-radius(×), border-radius(○)```
+* IE 적응층은 자동으로 작동 ```filter (×), opacity (○)```
+```javascript
+bs.Dom("#test").S("background-color", "#ff0", "position", "absolute" );
+```
+#### # element Style 단위
+* 숫자가 값이면 자동으로 **px** 사용
+* 특정 단위를 지정하고 싶은 경우 "XXX:unit" 형식 사용
+* "100%" 인 경우는 그 이후도 문자열 처리되지만, "100:%"인 경우 최초 설정 이후는 숫자 사용 가능
+```javascript
+//숫자가 들어오면 px로 처리됨
+bs.Dom("#test").S("width", 100 ); //"100px"
+
+//문자열인 경우 이후에도 문자열로 처리함
+bs.Dom("#test").S("width", "100%" ); //"100%"
+bs.Dom("#test").S("width", "50%" ); //"50%"
+
+//XXX:unit 형식은 최초 설정 이후 숫자로 사용가능
+bs.Dom("#test").S("width", "100:%" ); //"100%"
+bs.Dom("#test").S("width", 50 ); //"50%"
+```
+#### # 계산된 element 스타일
+```
+bs.Dom(xxx).S( '_style property' );
+```
+* "_XXX" 형식으로 계산된 스타일 결과를 반환
+* 반환된 값은 기본이 숫자로 경우에 따라 문자열도 있음
+```html
+<div style="width:200px">
+    <div id="a" style="width:50%">
+```
+```javascript
+bs.Dom("#a").S( "_width" ) == 100
+```

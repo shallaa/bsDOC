@@ -1,4 +1,18 @@
-@attr
-======
+#### # element 속성제어
+```
+// GET
+bs.Dom(xxx).S( '@attribute name' );
+// SET
+bs.Dom(xxx).S( '@attribute name', value );
+```
+* 키에 @를 붙이면 ```attribute``` 를 처리
+```html
+<div width="50" data="data1" id="test"></div>
+```
+```javascript
+//get
+bs.Dom("#test").S("@data") == "data1"
 
-
+//set
+bs.Dom("#test").S("@width", "100" ) == <div width="100">
+```

@@ -1,0 +1,87 @@
+#### # 이벤트 등록, 해지
+```
+bs.Dom(xxx).S( 'event name', function( $e ){...} );
+```
+* 브라우저가 지원하는 범위 내의 이벤트를 등록 가능
+* 이벤트 해지는 값에 null 을 지정
+* **각 이벤트별로 리스너는 1개만 가능**
+```
+// event 등록
+bs.Dom("#test").S("mousedown", function( $e ){...} );
+
+// event 해지
+bs.Dom("#test").S("mousedown", null );
+```
+* **this** : 이벤트리스너에서의 this는 무조건 이벤트가 걸린 DOM을 가리킴
+```javascript
+bs.Dom("#test").S("mousedown", function( $e ){
+    this === document.getElementById("test")
+}
+```
+* 인자로 수신된 이벤트 객체는 bs 전용 이벤트 객체로 다음과 같은 속성이 있음
+    * $e.prevent() : 이벤트 전파를 막음
+    * $e.key(키이름) : 해당키를 눌렀는지를 반환
+    * $e.event : 원본 네이티브 이벤트
+    * $e.type : 이벤트타입
+    * $e.code : 눌려진 키코드
+    * $e.dx : down이후 move나 up에서 움직여진 x의 거리
+    * $e.dy : down이후 move나 up에서 움직여진 y의 거리
+    * $e.x : page상에서의 x좌표
+    * $e.y : page상에서의 y좌표
+    * $e.lx : 부모로부터의 상대 x좌표
+    * $e.ly : 부모로부터의 상대 y좌표
+    * $e.value : 이벤트가 걸린 dom의 value속성에 trim한 값
+* 또한 터치 환경에서는 추가적으로 다음과 같은 속성이 존재함
+    * $e.length : 눌려진 손가락의 갯수
+    * $e.x0, $e.x1, .. : 손가락 별 x좌표
+    * $e.y0, $e.y1, .. : 손가락 별 y좌표
+    * $e.lx0, $e.lx1, .. : 부모로부터의 상대적인 손가락 별 x좌표
+    * $e.ly0, $e.ly1, .. : 부모로부터의 상대적인 손가락 별 y좌표
+    * $e.lx0, $e.lx1, .. : down이후 move나 up에서 움직여진 손가락별 x의 거리
+    * $e.ly0, $e.ly1, .. : down이후 move나 up에서 움직여진 손가락별 y의 거리
+```javascript
+bs.Dom("#test").S(
+    "down", function( $e ){
+        console.log( "좌표:", $e.x, $e.y );
+    },
+    "up", function( $e ){
+        console.log( "이동거리:", $e.dx, $e.dy );
+    }
+);
+```
+* down, up, move는 터치기기에서는 자동으로 touchstart, touchmove, touchend 에 대응
+* pc 기기에서는 mousedown, mosuemove, mouseup 에 대응됨
+```javascript
+//터치기기에서는 touchstart, pc에서는 mousedown
+bs.Dom("#test").S("down", function($e){...} );
+```
+* mouseout, mouseover 를 부모요소에 걸면 자식요소로 마우스가 이동해도 이벤트가 발생됨
+* bs에서는 전용 이벤트인 rollover, rollout으로 걸면 자식요소에서는 이벤트가 발생하지 않음
+```javascript
+bs.Dom("#test").S("rollover", function($e){..} );
+```
+
+#### # 키보드이벤트
+* keydown, keyup 등의 이벤트를 거는 경우 $e.code를 참고하면 눌린 키코드를 알 수 있음.
+* 하지만 매번 키코드를 확인해야하는 부분이 번거로우므로 키이름으로 조회할 수 있는 $e.key()를 사용.
+```javascript
+//키코드를 사용하는 경우
+bs.Dom("#test").S("keydown", function($e){
+    if( $e.code == 13 ){ //엔터를 눌렀다면
+        ....
+    }
+} );
+
+//$e.key()를 사용하는 경우
+bs.Dom("#test").S("keydown", function($e){
+    if( $e.key("enter") ){ //엔터를 눌렀다면
+        ....
+    }
+} );
+```
+* $e.key(키이름)에서 지원되는 이름리스트
+    * a~z 까지의 소문자 ```$e.key( "a" ); //a키가 눌렸음```
+    * 0~9 까지의 숫자 ```$e.key( "0" ); //0키가 눌렸음. 키패드아님!```
+    * 특수문자 : 전부 소문자 - back, tab, enter, shift, control, alt, pause, caps, esc, space, pageup, pagedown, end, home, left, up, right, down, insert, delete, numlock, scrolllock ```$e.key( "enter" ); //엔터키가 눌렸음```
+
+#### # 키보드이벤트
