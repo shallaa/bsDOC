@@ -1,0 +1,36 @@
+#### # 자식 요소 컨트롤
+```
+bs.Dom(xxx).S( '>' );
+```
+* ">" : 특정 자식을 얻거나 자식의 속성을 얻거나 자식을 넣음
+```javascript
+//자식리스트
+var list = bs.Dom("#test").S(">");
+
+//세번째 자식(인덱스는 0부터)
+var element = bs.Dom("#test").S(">2");
+
+//3번자식의 html
+var data = bs.Dom("#test").S(">3", "html");
+```
+* 자식을 넣는 경우
+```javascript
+//<div>는 #test의 자식이 됨
+bs.dom("#test").$(">","<div></div>");
+
+//<div>는 #test의 네번째(인덱스는 0부터)자식이 됨
+bs.dom("#test").$(">3","<div></div>");
+```
+#### # 자손 요소 컨트롤
+```
+bs.Dom(xxx).S( '>인덱스>인덱스>인덱스>...' );
+```
+* ">인덱스>인덱스>인덱스" : 특정 자손으로 손쉽게 드릴다운할 수 있음.
+* 자손요소 자체를 얻거나 키를 얻는 기능만 지원
+```javascript
+//2번자식의 3번자식(인덱스는 0부터)
+var element = bs.Dom("#test").S(">2>3");
+
+//2번자식의 3번자식의 html
+var data = bs.Dom("#test").S(">2>3", "html");
+```

@@ -1,0 +1,19 @@
+#### # 미리 정의된 특수한 키
+* bs.Dom("#test").S("x") : 페이지상의 x위치
+* bs.Dom("#test").S("y") : 페이지상의 y위치
+* bs.Dom("#test").S("lx") : 부모로부터 x위치
+* bs.Dom("#test").S("ly") : 부모로부터 y위치
+* bs.Dom("#test").S("w") : 계산된 가로크기(offsetWidth)
+* bs.Dom("#test").S("h") : 계산된 세로크기(offsetHeight)
+* bs.Dom("#test").S("f") : dom.focus() 실행
+* bs.Dom("#test").S("s") : dom.submit() 실행
+* bs.Dom("#test").S("b") : dom.blur() 실행
+* bs.Dom("#test").S("html" (,값) ) : innerHTML을 반환하거나 설정 후 반환
+* bs.Dom("#test").S("html+", 값 ) : 기존 html 뒤에 값을 붙인 뒤 반환
+* bs.Dom("#test").S("+html", 값 ) : 기존 html 앞에 값을 붙인 뒤 반환
+* bs.Dom("#test").S("+text", 값 ) : innerText에 대해 html과 동일
+* bs.Dom("#test").S("class" (,값) ) : 클래스를 반환하거나 설정 후 반환
+* bs.Dom("#test").S("class+", 값 ) : 클래스를 추가
+* bs.Dom("#test").S("class-", 값 ) : 클래스를 제거
+* bs.Dom("#test").S("<", 부모선택자 ) : 해당 부모선택자의 자식이 됨
+* bs.Dom("#test").S(">", 자식선택자 ) : 해당 자식선택자는 자신의 자식이 됨
