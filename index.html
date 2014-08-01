@@ -28,12 +28,13 @@
 <script src="../bsJS/bsjs.0.5.js"></script><script>
 bs.plugin('markdown'),
 bs(function(){
-	
+
 	SUB_PROJECTS:
 	var PROJECT = 'bsJS,bsPHP';
 	
 	STARTER:
 	var start = function(){
+		var intro;
 		
 		CSS:
 		bs.Css('h1').S( 'text-align', 'center', 'font-size', '1.5em' ),
@@ -45,16 +46,11 @@ bs(function(){
 		
 		OPEN:
 		bs.Dom('#preloader').S( 'display', 'none' ),
-		bs.get( function(data){
+		bs.Dom('#stage').S( 'display', 'block' );
 			
-			bs.Dom('#doc').S( 'html', bs.markdown(data) );
-			bs.Dom('#stage').S( 'display', 'block' );
-			
-			ROUTING:
-			bs.router( 'path', 'controller/path.json', 'start', function(){} );
-		
-		}, 'intro.html' );
-		
+		ROUTING:
+		base = location.pathname, base = base.substr( base.lastIndexOf('/') + 1 ) + '#!',
+		bs.router( 'path', 'controller/path.json', 'start', function(){location.hash ? bs.router('change') : location.href = base + 'intro';} );
 	},
 	loader = function(v){
 		bs.get( function(data){
@@ -72,18 +68,14 @@ bs(function(){
 					for( t2 = t0[t1[i]], k = 0, l = t2.length ; k < l ; k++ ) t3 = t2[k], str += '<li data-path="' + [v, ver, t1[i].split('.')[1], t3].join('/') + '">' + t3 + '</li>';
 					str += '</ul>'
 				}
-				bs.Dom('#' + v + '_list').S( 'html', str );
-				bs.Dom('[data-path^=' + v + ']').S( 'cursor', 'pointer', 'down', function(e){
-					bs.get( function(data){
-						bs.Dom('#doc').S( 'html', bs.markdown(data) );
-					}, bs.Dom(this).S('*path')+'.html' );
-				} );
+				bs.Dom('#' + v + '_list').S( 'html', str ),
+				bs.Dom('[data-path^=' + v + ']').S( 'cursor', 'pointer', 'down', function(e){location.href = base + bs.Dom(this).S('*path');} );
 			} );
 			bs.Dom('<ul id="' + v + '_list"></ul>').S( '<', '#contents' );
-			console.log( k, j );
 			if( ++k == j ) start();
 		}, v + '/index.json' );
-	}, index = {}, t0, i, j, k;  
+	},
+	base, index = {}, t0, i, j, k;  
 	
 	LOADING:
 	t0 = PROJECT.split(','), i = 0, j = t0.length, k = 0;

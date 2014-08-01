@@ -1,9 +1,4 @@
 {
 	"base":"controller/",
-	"folder":{
-		"bsJS":{
-		},
-		"bsPHP":{
-		}
-	}
+	"folder":{}
 }
