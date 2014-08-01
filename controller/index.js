@@ -7,7 +7,7 @@ exports.controller = {
 		],
 		mk = function(d){
 			var ver, items, item, links, link, id, t0;
-			bs.Dom('#stage').S('>', bs.tmpl( '<h1>@title@</h1><ul id="@title@"></ul>', {title : d.title} ) );
+			bs.Dom('#stage').S('>', bs.tmpl( '<h1><a href="./#">@title@</a></h1><ul id="@title@"></ul>', {title : d.title} ) );
 			//console.log(d)
 			for(ver in d.doc){
 				t0 = bs.Dom( '@#' + d.title ).S('>', bs.tmpl( '<li>v.@ver@</li>', {ver : ver} ) );
@@ -20,13 +20,17 @@ exports.controller = {
 					
 					links = items[item];
 					for(link in links){
-						t0 = window.location.pathname + '#/' + [d.title, ver, item, links[link]].join('/');
+						t0 = window.location.pathname + '#!/' + [d.title, ver, item, links[link]].join('/');
 						t0 = bs.Dom( '@#'+id+item ).S( '>', bs.tmpl( '<li><a href="@path@">@link@</a></li>', {link : link, path:t0} ) );
 						//bs.Dom( t0[0] ).S('click', md( d.title, ver, item, links[link] ) );
 					}
 				}
 			}
 		};
+		console.log(bs.router('file'));
+		console.log(bs.router('virtual'));
+		console.log(bs.router('arguments'));
+		console.log(bs.router('method'));
 		bs.Dom('#stage').S('html', '');
 		bs.Dom('#contents').S('html', '');
 		for( i = 0; i < DOCS.length; i++ ){
