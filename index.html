@@ -51,7 +51,7 @@ bs(function(){
 		ROUTING:
 		uri.base = location.pathname, uri.base = uri.base.substr( uri.base.lastIndexOf('/') + 1 ) + '#!',
 		bs.router( '*', function(){
-			bs.get( function(data){bs.Dom('#doc').S( 'html', bs.markdown(data) );}, Array.prototype.join.call( arguments, '/' ) + '.html' );
+			bs.get( contents, Array.prototype.join.call( arguments, '/' ) + '.html' );
 		}, 'start', function(){location.hash ? bs.router('change') : uri('projectBS/intro');} );
 		
 	},
@@ -92,6 +92,7 @@ bs(function(){
 	},
 	uri = function(v){location.href = uri.base + v;},
 	jump = function(e){uri(bs.Dom(this).S('*path'));},
+	contents = function(v){bs.Dom('#doc').S( 'html', bs.markdown(v) );}
 	index = {};
 	
 	LOADING:
