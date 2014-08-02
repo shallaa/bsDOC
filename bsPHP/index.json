@@ -1,6 +1,6 @@
 {
 	"version":true,
 	"0.1":{
-		"1.Doc":["index"]
+		"1.Beginning":["intro", "install", "architecture"]
 	}
 }
