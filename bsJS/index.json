@@ -1,4 +1,5 @@
 {
+	"version":true,
 	"0.5":{
 		"1.Dom":["intro","node","attr","style","event","function"],
 		"2.Css":[]

@@ -22,7 +22,7 @@
 <div id="preloader">Loading...</div>
 <div id="stage">
 	<h1>projectBS Document System</h1>
-	<div id="left"><div id="contents">Load</div></div>
+	<div id="left"><div id="contents"></div></div>
 	<div id="right"><div id="doc"></div></div>
 </div>
 
@@ -31,7 +31,7 @@ bs.plugin('markdown'),
 bs(function(){
 
 	SUB_PROJECTS:
-	var PROJECT = 'bsJS,bsPHP';
+	var PROJECT = 'projectBS,bsJS,bsPHP'.split(',');
 	
 	STARTER:
 	var start = function(){
@@ -49,39 +49,53 @@ bs(function(){
 		bs.Dom('#stage').S( 'display', 'block' );
 			
 		ROUTING:
-		base = location.pathname, base = base.substr( base.lastIndexOf('/') + 1 ) + '#!',
-		bs.router( 'path', 'controller/path.json', 'start', function(){location.hash ? bs.router('change') : location.href = base + 'intro';} );
+		uri.base = location.pathname, uri.base = uri.base.substr( uri.base.lastIndexOf('/') + 1 ) + '#!',
+		bs.router( '*', function(){
+			bs.get( function(data){bs.Dom('#doc').S( 'html', bs.markdown(data) );}, Array.prototype.join.call( arguments, '/' ) + '.html' );
+		}, 'start', function(){location.hash ? bs.router('change') : uri('intro');} );
 		
 	},
 	loader = function(v){
 		bs.get( function(data){
-			var items = {}, menu = [], str, key, t0;
-			
-			index[v] = t0 = JSON.parse(data);
-			if( !k ) bs.Dom('#contents').S( 'html', '' );
-			str = '<div>' + v + ' <select id="' + v + '_ver"><option value="">version</option>';
-			for( key in t0 ) str += '<option value="' + key + '">' + key + '</option>', items[key] = t0[key];
-			bs.Dom(str + '</select>').S( '<', '#contents', 'change', function(e){
-				var str, ver = bs.Dom('#' + v + '_ver').S('@value'), t0 = items[ver], t1 = [], t2, t3, i, j;
-				if( !t0 ) return bs.Dom('#' + v + '_list').S('html','');
-				for( i in t0 ) t1[t1.length] = i;
-				for( str = '', t1.sort(), i = 0, j = t1.length ; i < j ; i++ ){
-					str += '<div>' + t1[i] + '</div><ul>';
-					for( t2 = t0[t1[i]], k = 0, l = t2.length ; k < l ; k++ ) t3 = t2[k], str += '<li data-path="' + [v, ver, t1[i].split('.')[1], t3].join('/') + '">' + t3 + '</li>';
-					str += '</ul>'
-				}
-				bs.Dom('#' + v + '_list').S( 'html', str ),
-				bs.Dom('[data-path^=' + v + ']').S( 'cursor', 'pointer', 'down', function(e){location.href = base + bs.Dom(this).S('*path');} );
-			} );
+			var items = {}, t0 = index[v] = JSON.parse(data), ver = t0.version, str, key;
+			delete t0.version;
+			if( ver ){
+				str = '<div>' + v + ' <select id="' + v + '_ver"><option value="">version</option>';
+				for( key in t0 ) str += '<option value="' + key + '">' + key + '</option>', items[key] = t0[key];
+				bs.Dom('#contents').S( 'html+', str + '</select></div>' );
+				bs.Dom('#' + v + '_ver').S( '<', '#contents', 'change', function(e){
+					var str, ver = bs.Dom('#' + v + '_ver').S('@value'), t0 = items[ver], t1 = [], t2, t3, i, j;
+					if( !t0 ) return bs.Dom('#' + v + '_list').S('html','');
+					for( i in t0 ) t1[t1.length] = i;
+					for( str = '', t1.sort(), i = 0, j = t1.length ; i < j ; i++ ){
+						t2 = t0[t1[i]];
+						for( str += '<li>' + t1[i] + '<ul>', k = 0, l = t2.length ; k < l ; k++ ) t3 = t2[k], str += '<li data-path="' + [v, ver, bs.trim(t1[i].split('.')[1]), t3].join('/') + '">' + t3 + '</li>';
+						str += '</ul></li>'
+					}
+					bs.Dom('#' + v + '_list').S( 'html', str ),
+					bs.Dom('[data-path^=' + v + ']').S( 'cursor', 'pointer', 'down', jump );
+				} );
+			}else{
+				bs.Dom( '<div>' + v + '</div>' ).S( '<', '#contents', 'cursor', 'pointer', 'down', function(e){
+					var t1, i, j;
+					t1 = [];
+					for( i in t0 ) t1[t1.length] = i;
+					for( t1.sort(), i = 0, j = t1.length ; i < j ; i++ ){
+						bs.Dom('<li data-path="' + [v, t0[t1[i]]].join('/') + '">' + t1[i] + '</li>').S('<','#' + v + '_list');
+					}
+					bs.Dom('[data-path^=' + v + ']').S( 'cursor', 'pointer', 'down', jump );
+				});
+			}
 			bs.Dom('<ul id="' + v + '_list"></ul>').S( '<', '#contents' );
-			if( ++k == j ) start();
+			++PROJECT.count == PROJECT.length ? start() : loader(PROJECT[PROJECT.count]);
 		}, v + '/index.json' );
 	},
-	base, index = {}, t0, i, j, k;  
+	uri = function(v){location.href = uri.base + v;},
+	jump = function(e){uri(bs.Dom(this).S('*path'));},
+	index = {};
 	
 	LOADING:
-	t0 = PROJECT.split(','), i = 0, j = t0.length, k = 0;
-	while( i < j ) loader(t0[i++]);
+	loader(PROJECT[PROJECT.count = 0]);
 });
 </script>
 </body>
