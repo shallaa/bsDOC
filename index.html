@@ -52,7 +52,7 @@ bs(function(){
 		uri.base = location.pathname, uri.base = uri.base.substr( uri.base.lastIndexOf('/') + 1 ) + '#!',
 		bs.router( '*', function(){
 			bs.get( function(data){bs.Dom('#doc').S( 'html', bs.markdown(data) );}, Array.prototype.join.call( arguments, '/' ) + '.html' );
-		}, 'start', function(){location.hash ? bs.router('change') : uri('intro');} );
+		}, 'start', function(){location.hash ? bs.router('change') : uri('projectBS/intro');} );
 		
 	},
 	loader = function(v){
