@@ -50,49 +50,62 @@ bs(function(){
 			
 		ROUTING:
 		uri.base = location.pathname, uri.base = uri.base.substr( uri.base.lastIndexOf('/') + 1 ) + '#!',
-		bs.router( '*', function(){
-			bs.get( contents, Array.prototype.join.call( arguments, '/' ) + '.html' );
-		}, 'start', function(){location.hash ? bs.router('change') : uri('projectBS/intro');} );
+		bs.router(
+			'*', function(){
+				var k = contents.uri = Array.prototype.join.call( arguments, '/' ) + '.html', v = bs.local(k);
+				v ? contents(v) : bs.get( contents, k );
+			},
+			'start', function(){location.hash ? bs.router('change') : uri('projectBS/intro');}
+		);
 		
 	},
 	loader = function(v){
 		bs.get( function(data){
-			var items = {}, t0 = index[v] = JSON.parse(data), ver = t0.version, str, key;
+			var items = {}, t0 = index[v] = JSON.parse(data), ver = t0.version, str, isFirst, t1, i, j, k;
 			delete t0.version;
 			if( ver ){
-				str = '<div>' + v + ' <select id="' + v + '_ver"><option value="">version</option>';
-				for( key in t0 ) str += '<option value="' + key + '">' + key + '</option>', items[key] = t0[key];
+
+				TITLE:
+				t1 = [];
+				for( k in t0 ) t1[t1.length] = k;
+				for( str = '<div>' + v + ' <select id="' + v + '_ver"><option value="">version</option>', t1.sort(), i = 0, j = t1.length ; i < j ; i++ )
+					k = t1[i], str += '<option value="' + k + '">' + k + '</option>', items[k] = t0[k];
 				bs.Dom('#contents').S( 'html+', str + '</select></div>' );
+
+				SELECT_VERSION:
 				bs.Dom('#' + v + '_ver').S( '<', '#contents', 'change', function(e){
-					var str, ver = bs.Dom('#' + v + '_ver').S('@value'), t0 = items[ver], t1 = [], t2, t3, i, j;
-					if( !t0 ) return bs.Dom('#' + v + '_list').S('html','');
+					var str, ver, title, t0, t1, t2, t3, i, j, k, l;
+					if( !( ver = this.value ) ) return bs.Dom('#' + v + '_list').S( 'html', '' );
+					t0 = items[ver], t1 = [];
 					for( i in t0 ) t1[t1.length] = i;
 					for( str = '', t1.sort(), i = 0, j = t1.length ; i < j ; i++ ){
-						t2 = t0[t1[i]];
-						for( str += '<li>' + t1[i] + '<ul>', k = 0, l = t2.length ; k < l ; k++ ) t3 = t2[k], str += '<li data-path="' + [v, ver, bs.trim(t1[i].split('.')[1]), t3].join('/') + '">' + t3 + '</li>';
+						t2 = t0[t1[i]], title = titles(t1[i]);
+						for( str += '<li>' + title + '<ul>', k = 0, l = t2.length ; k < l ; k++ ) t3 = t2[k], str += '<li data-path="' + [v, ver, title, t3].join('/') + '">' + t3 + '</li>';
 						str += '</ul></li>'
 					}
-					bs.Dom('#' + v + '_list').S( 'html', str ),
-					bs.Dom('[data-path^=' + v + ']').S( 'cursor', 'pointer', 'down', jump );
+					bs.Dom( '#' + v + '_list' ).S( 'html', str ),
+					bs.Dom('@[data-path^=' + v + ']').S( 'cursor', 'pointer', 'down', jump );
 				} );
+				
 			}else{
+				
 				bs.Dom( '<div>' + v + '</div>' ).S( '<', '#contents', 'cursor', 'pointer', 'down', function(e){
 					var t1, i, j;
 					t1 = [];
 					for( i in t0 ) t1[t1.length] = i;
-					for( t1.sort(), i = 0, j = t1.length ; i < j ; i++ ){
-						bs.Dom('<li data-path="' + [v, t0[t1[i]]].join('/') + '">' + t1[i] + '</li>').S('<','#' + v + '_list');
-					}
-					bs.Dom('[data-path^=' + v + ']').S( 'cursor', 'pointer', 'down', jump );
+					for( t1.sort(), i = 0, j = t1.length ; i < j ; i++ ) bs.Dom('<li data-path="' + [v, t0[t1[i]]].join('/') + '">' + titles(t1[i]) + '</li>').S( '<', '#' + v + '_list' );
+					bs.Dom('@[data-path^=' + v + ']').S( 'cursor', 'pointer', 'down', jump );
 				});
+				
 			}
-			bs.Dom('<ul id="' + v + '_list"></ul>').S( '<', '#contents' );
+			bs.Dom('<ol id="' + v + '_list"></ol>').S( '<', '#contents' );
 			++PROJECT.count == PROJECT.length ? start() : loader(PROJECT[PROJECT.count]);
 		}, v + '/index.json' );
 	},
 	uri = function(v){location.href = uri.base + v;},
 	jump = function(e){uri(bs.Dom(this).S('*path'));},
-	contents = function(v){bs.Dom('#doc').S( 'html', bs.markdown(v) );}
+	contents = function(v){bs.Dom('#doc').S( 'html', bs.markdown(bs.local( contents.uri, v )) );},
+	titles = function(v){return bs.trim(v.split('.')[1]);},
 	index = {};
 	
 	LOADING:
