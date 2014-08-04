@@ -27,7 +27,7 @@
 </div>
 
 <script src="../bsJS/bsjs.0.5.js"></script><script>
-bs.plugin('markdown'),
+bs.plugin( 'markdown', null, 'ui', null ),
 bs(function(){
 
 	SUB_PROJECTS:
@@ -38,6 +38,8 @@ bs(function(){
 		
 		CSS:
 		bs.Css('h1').S( 'text-align', 'center', 'font-size', '1.5em' ),
+		bs.Css('.nocache').S( 'color', '#900', 'font-size', '.5em', 'font-weight', 'bold' ),
+		bs.Css('.msg').S( 'color', '#eeff41', 'text-align', 'center', 'padding', '5px 0', 'font-size', '1em' ),
 		bs.Css('#stage').S( 'margin', '0 auto', 'width', '100%', 'max-width', '960px' ),
 		bs.Css('#left').S( 'width', '20%', 'float', 'left', 'font-size', '1em', 'background', '#eee' ),
 		bs.Css('#contents').S( 'overflow', 'hidden', 'margin', '0.5em' ),
@@ -45,9 +47,9 @@ bs(function(){
 		bs.Css('#doc').S( 'overflow', 'hidden', 'margin', '0.5em' );
 		
 		OPEN:
-		bs.Dom('#preloader').S( 'display', 'none' ),
+		bs.Dom('#preloader').S(null),
 		bs.Dom('#stage').S( 'display', 'block' );
-			
+		
 		ROUTING:
 		uri.base = location.pathname, uri.base = uri.base.substr( uri.base.lastIndexOf('/') + 1 ) + '#!',
 		bs.router(
@@ -64,52 +66,54 @@ bs(function(){
 			var items = {}, t0 = index[v] = JSON.parse(data), ver = t0.version, str, isFirst, t1, i, j, k;
 			delete t0.version;
 			if( ver ){
-
-				TITLE:
 				t1 = [];
 				for( k in t0 ) t1[t1.length] = k;
 				for( str = '<div>' + v + ' <select id="' + v + '_ver"><option value="">version</option>', t1.sort(), i = 0, j = t1.length ; i < j ; i++ )
 					k = t1[i], str += '<option value="' + k + '">' + k + '</option>', items[k] = t0[k];
 				bs.Dom('#contents').S( 'html+', str + '</select></div>' );
-
-				SELECT_VERSION:
 				bs.Dom('#' + v + '_ver').S( '<', '#contents', 'change', function(e){
 					var str, ver, title, t0, t1, t2, t3, i, j, k, l;
 					if( !( ver = this.value ) ) return bs.Dom('#' + v + '_list').S( 'html', '' );
 					t0 = items[ver], t1 = [];
 					for( i in t0 ) t1[t1.length] = i;
-					for( str = '', t1.sort(), i = 0, j = t1.length ; i < j ; i++ ){
+					for( str = '', t1.sort(sorting), i = 0, j = t1.length ; i < j ; i++ ){
 						t2 = t0[t1[i]], title = titles(t1[i]);
-						for( str += '<li>' + title + '<ul>', k = 0, l = t2.length ; k < l ; k++ ) t3 = t2[k], str += '<li data-path="' + [v, ver, title, t3].join('/') + '">' + t3 + '</li>';
+						for( str += '<li>' + title + '<ul>', k = 0, l = t2.length ; k < l ; k++ ) t3 = t2[k], str += '<li><a data-path="' + [v, ver, title, t3].join('/') + '">' + t3 + '</a></li>';
 						str += '</ul></li>'
 					}
 					bs.Dom( '#' + v + '_list' ).S( 'html', str ),
-					bs.Dom('@[data-path^=' + v + ']').S( 'cursor', 'pointer', 'down', jump );
+					list(v);
 				} );
-				
 			}else{
-				
 				bs.Dom( '<div>' + v + '</div>' ).S( '<', '#contents', 'cursor', 'pointer', 'down', function(e){
-					var t1, i, j;
-					t1 = [];
+					var t1 = [], i, j;
+					bs.Dom('#' + v + '_list').S( 'html', '' );
 					for( i in t0 ) t1[t1.length] = i;
-					for( t1.sort(), i = 0, j = t1.length ; i < j ; i++ ) bs.Dom('<li data-path="' + [v, t0[t1[i]]].join('/') + '">' + titles(t1[i]) + '</li>').S( '<', '#' + v + '_list' );
-					bs.Dom('@[data-path^=' + v + ']').S( 'cursor', 'pointer', 'down', jump );
+					for( t1.sort(sorting), i = 0, j = t1.length ; i < j ; i++ ) bs.Dom('<li><a data-path="' + [v, t0[t1[i]]].join('/') + '">' + titles(t1[i]) + '</a></li>').S( '<', '#' + v + '_list' );
+					list(v);
 				});
-				
 			}
 			bs.Dom('<ol id="' + v + '_list"></ol>').S( '<', '#contents' );
 			++PROJECT.count == PROJECT.length ? start() : loader(PROJECT[PROJECT.count]);
 		}, v + '/index.json' );
 	},
 	uri = function(v){location.href = uri.base + v;},
-	jump = function(e){uri(bs.Dom(this).S('*path'));},
+	sorting = function( a, b ){return parseFloat(a.substring( 0, a.indexOf('.') )) - parseFloat(b.substring( 0, b.indexOf('.') ));},
 	contents = function(v){bs.Dom('#doc').S( 'html', bs.markdown(bs.local( contents.uri, v )) );},
 	titles = function(v){return bs.trim(v.split('.')[1]);},
+	x = function(){return bs.Dom('<a class="nocache"> X</a>').S( 'cursor', 'pointer', 'down', nocache, 'this' );},
+	list = function(v){bs.Dom('@[data-path^=' + v + ']').S( 'cursor', 'pointer', 'down', jump, 'after', x );},
+	jump = function(e){uri(bs.Dom(this).S('*path'));},
+	nocache = function(e){
+		var k = bs.Dom(this.previousSibling).S('*path');
+		bs.local( k + '.html', null ),
+		bs.Dom(this).S(null),
+		bs.UI.toast( '<div class="msg">Cache Removed!<br>' + k + '</div>', .3 );
+	},
 	index = {};
-	
 	LOADING:
 	loader(PROJECT[PROJECT.count = 0]);
+	bs.UI.init();
 });
 </script>
 </body>
