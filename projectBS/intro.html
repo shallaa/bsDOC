@@ -109,31 +109,31 @@ bs 는 DOM처리를 비롯하여 통신, 애니메이션을 포함하는 대부�
 #시작하기
 1. 문서의 아무 곳이나 스크립트 태그를 통해 bs를 삽입합니다.
 
-    ```
-    script src="http://projectbs.github.io/bsJS/bs/bsjs.js"
-    ```
+```
+script src="http://projectbs.github.io/bsJS/bs/bsjs.js"
+```
 
 2. 삽입한 이 후에는 다음과 같은 형식으로 bs를 사용합니다.
 
-    ```
-    bs( function(){
+```
+bs( function(){
 
-        // 여기에 소스
+    // 여기에 소스
 
-    } );
-    ```
+} );
+```
 
 3. 간단히 dom을 생성하고 스타일과 내용, 이벤트 리스너를 일시에 지정해 봅니다.
 
-    ```
-     bs( function(){
+```
+ bs( function(){
 
-        bs.Dom( '<div></div>' ).S( 
-            '<', 'body', // 부모를 body로
-            'html', '안녕', // html을 넣어준다
-            'width', 300, // 스타일을 지정한다.
-            'click', function( $e ){alert(1);} // 이벤트를 지정한다.
-        );
+    bs.Dom( '<div></div>' ).S( 
+        '<', 'body', // 부모를 body로
+        'html', '안녕', // html을 넣어준다
+        'width', 300, // 스타일을 지정한다.
+        'click', function( $e ){alert(1);} // 이벤트를 지정한다.
+    );
 
-    } );
-     ```
+} );
+```
