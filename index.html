@@ -21,7 +21,7 @@
 
 <div id="preloader">Loading...</div>
 <div id="stage">
-	<div id="header"><h1>projectBS Document System</h1></div>
+	<div id="header"><div><h1>projectBS Document System</h1></div></div>
 	<div id="left"><div id="contents"></div></div>
 	<div id="right"><div id="doc"></div></div>
 </div>
@@ -47,9 +47,9 @@ bs(function(){
 		bs.Css('.msg').S( 'color', '#eeff41', 'text-align', 'center', 'padding', '5px 0', 'font-size', '1em' ),
 		bs.Css('#stage').S( /*'margin', '0 auto', */'width', '100%', /*'max-width', '960px',*/ 'height', '100%', 'overflow', 'hidden' ),
 		bs.Css('#header').S( 'position', 'fixed', 'width', '100%', 'height', '55px', 'background-color', '#D8D8D8', 'color', '#111' ,'border-bottom','#aaa 1px solid','background-image','linear-gradient(top, #F4F4F4, #D8D8D8)','border-right','1px solid #bbb','box-shadow','0 2px 10px rgba(0,0,0,0.25)'),
-		bs.Css('#header h1').S('padding', '13px', 'text-align', 'left'),
+        bs.Css('#header h1').S('padding', '13px', 'text-align', 'left'),
 		bs.Css('#left').S( 'width', '20%', 'height', '100%', 'float', 'left', 'font-size', '1em', 'background', '#eaeaea', 'margin-top', '50px' ),
-        bs.Css('#left select').S( 'width', '99%', 'padding',3),
+        bs.Css('#left select').S( 'width', '99%', 'padding',3,'background-color','#D8D8D8','border','1px solid #aaa','box-shadow','0 0 3px #fff inset, 0 1px 1px rgba(0,0,0,0.1)','background-image','linear-gradient(top, #eee 20%, #fff 50%)'),
 		bs.Css('#contents').S( 'overflow', 'auto', 'margin', '1.1em' ),
 		bs.Css('#contents > div').S( 'color', '#333', 'font-size', '0.8em', 'font-weight', 'bold' ,'text-shadow',' 0 -1px 0 #fff'),
 		bs.Css('#contents > select').S( 'margin-left', '1px' ),
