@@ -33,7 +33,7 @@ bs.plugin( 'markdown', null, 'ui', null ),
 bs(function(){
 
 	SUB_PROJECTS:
-	var PROJECT = 'projectBS,bsJS,bsPHP'.split(',');
+	var PROJECT = 'projectBS,bsJS,bsPHP,bsWebGL'.split(',');
 
 	STARTER:
 	var start = function(){
@@ -46,13 +46,13 @@ bs(function(){
 		bs.Css('.nocache').S( 'color', '#900', 'font-size', '.5em', 'font-weight', 'bold' ),
 		bs.Css('.msg').S( 'color', '#eeff41', 'text-align', 'center', 'padding', '5px 0', 'font-size', '1em' ),
 		bs.Css('#stage').S( /*'margin', '0 auto', */'width', '100%', /*'max-width', '960px',*/ 'height', '100%', 'overflow', 'hidden' ),
-		bs.Css('#header').S( 'position', 'fixed', 'width', '100%', 'height', '50px', 'background-color', '#7D569F', 'color', '#fff' ),
+		bs.Css('#header').S( 'position', 'fixed', 'width', '100%', 'height', '55px', 'background-color', '#7D569F', 'color', '#fff' ,'background-image','linear-gradient(to bottom, #46284c 0%, #171323 100%)'),
 		bs.Css('#header h1').S('padding', '13px', 'text-align', 'left'),
-		bs.Css('#left').S( 'width', '20%', 'height', '100%', 'float', 'left', 'font-size', '1em', 'background', '#eee', 'margin-top', '50px' ),
-        bs.Css('#left select').S( 'width', '90%'),
-		bs.Css('#contents').S( 'overflow', 'auto', 'margin', '0.5em' ),
+		bs.Css('#left').S( 'width', '20%', 'height', '100%', 'float', 'left', 'font-size', '1em', 'background', '#ddd', 'margin-top', '50px' ),
+        bs.Css('#left select').S( 'width', '99%', 'padding',3),
+		bs.Css('#contents').S( 'overflow', 'auto', 'margin', '1.1em' ),
 		bs.Css('#contents > div').S( 'color', '#9B6EC3', 'font-size', '1.3em', 'font-weight', 'bold' ),
-		bs.Css('#contents > select').S( 'margin-left', '15px' ),
+		bs.Css('#contents > select').S( 'margin-left', '1px' ),
 		bs.Css('#contents ol').S( 'font-weight', 'bold' ),
 		bs.Css('#contents ul').S( 'font-weight', 'normal' ),
 		bs.Css('#right').S( 'width', '80%', 'height', '100%', 'float', 'left', 'font-size', '1.2em', 'overflow', 'auto', 'margin-top', '50px' ),
