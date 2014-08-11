@@ -26,21 +26,23 @@
 	<div id="right"><div id="doc"></div></div>
 </div>
 
-<script src="../bsJS/bsjs.0.5.js"></script><script>
+<!--<script src="../bsJS/bsjs.0.5.js"></script>-->
+<script src="    http://projectbs.github.io/bsJS/bsjs.0.5.js"></script>
+<script>
 bs.plugin( 'markdown', null, 'ui', null ),
 bs(function(){
 
 	SUB_PROJECTS:
 	var PROJECT = 'projectBS,bsJS,bsPHP'.split(',');
-	
+
 	STARTER:
 	var start = function(){
-		
+
 		CSS:
 		bs.Css('html, body').S( 'height', '100%' ),
 		bs.Css('body, div, h1, h2, h3, h4, h5, table').S( 'margin', '0px' ),
 		bs.Css('h1').S( 'text-align', 'center', 'font-size', '1.5em' ),
-		bs.Css('code').S( 'color', '#800', 'background', '#f0f0f0', 'padding', '.1em', 'margin-left', '.1em', 'margin-right', '.1em' ),
+		bs.Css('code').S( 'font-size','0.7em','color', '#800', 'background', '#f0f0f0', 'padding', '0.3em ', 'margin-left', '1.1em', 'margin-right', '.1em' ,'border-radius',5,'box-shadow','inset 1px 1px 0 #ccc'),
 		bs.Css('.nocache').S( 'color', '#900', 'font-size', '.5em', 'font-weight', 'bold' ),
 		bs.Css('.msg').S( 'color', '#eeff41', 'text-align', 'center', 'padding', '5px 0', 'font-size', '1em' ),
 		bs.Css('#stage').S( /*'margin', '0 auto', */'width', '100%', /*'max-width', '960px',*/ 'height', '100%', 'overflow', 'hidden' ),
@@ -54,11 +56,11 @@ bs(function(){
 		bs.Css('#contents ul').S( 'font-weight', 'normal' ),
 		bs.Css('#right').S( 'width', '80%', 'height', '100%', 'float', 'left', 'font-size', '1.2em', 'overflow', 'auto', 'margin-top', '50px' ),
 		bs.Css('#doc').S( 'margin', '0.5em' );
-		
+
 		OPEN:
 		bs.Dom('#preloader').S(null),
 		bs.Dom('#stage').S( 'display', 'block' );
-		
+
 		ROUTING:
 		uri.base = location.pathname, uri.base = uri.base.substr( uri.base.lastIndexOf('/') + 1 ) + '#!',
 		bs.router(
@@ -68,7 +70,7 @@ bs(function(){
 			},
 			'start', function(){location.hash ? bs.router('change') : uri('projectBS/intro');}
 		);
-		
+
 	},
 	loader = function(v){
 		bs.get( function(data){
