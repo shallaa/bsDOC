@@ -1,0 +1,333 @@
+## 1 cls
+##### Support : [Browser]
+### 1-1 cls 배경 이해
+JavaScript에서 사용자 정의 클래스를 생성할 때는 일반적으로 new MyClass() 를 사용합니다.
+하지만 bs를 사용하시는 분들은 알다시피 bs는 bs.Dom 이나 bs.Css 등과 같은 형태로 객체를 생성합니다.
+왜 굳이 new를 두고 매서드를 통해서 생성을 할까요?
+
+이유는 간단합니다. JS에서의 대부분의 오류와 성능이슈는 잘못되거나 실수를 바탕으로 한 무분별한 변수사용입니다.
+
+bs는 가능한 new와 변수선언을 억제시켜 오류의 범위를 극적으로 줄일 수 있는 환경제공 하고자 했습니다.
+그 결과 다음과 같이 new를 사용하지 않는 클래스 생성 방법을 제공하고 있습니다.
+```javascript
+bs.Dom('<div></div>'), bs.Css('li').S('padding:30')
+```
+좋은 취지 인건 알겠지만!!! 머리속을 떠도는 의문은
+
+“bs 시스템을 활용하면서 우리가 원하는 객체를 어떻게 생성할 수 있는가?” 입니다.
+
+그래서 마련된 bs.cls 이해하기!!!!
+
+
+
+#### # 가장 기초적인 bs Class 정의코드
+```javascript
+bs.cls( "Myclass", function(fn, clsfn, bs){
+//TODO 객체를 정의해나갈부분
+})
+console.log( bs.Myclass( "test") ) // bs로 만든 객체가 튀어나옵니다.
+//벌써 bs용 클래스를 생성하셨음!
+```
+
+
+#### # 클래스 네임 규칙
+1.첫 글자는 대문자 (케멀케이스를 허용하지 않습니다.)
+```
+Myclass -- 올바름
+MyClass -- 실패!  캐멀케이스 불가!
+myClass -- 실패! 첫 글자는 대문자!!
+```
+실제로 아래와 같이 정의해 보면
+```javascript
+bs.cls('Myclass', function(fn, clsfn, bs){ })  // 성공
+bs.cls('MyClass', function(fn, clsfn, bs){ })  // 실패
+bs.cls('myClass', function(fn, clsfn, bs){ })  // 실패
+```
+콘솔창에 bs가 이쁘게 에러를 표시해줍니다!
+
+
+#### # 정의함수 이해 심화
+```javascript
+bs.cls( 'Myclass',
+    function(fn, clsfn, bs){}  // 실제 클래스 정의 함수
+)
+```
+클래스 네임 규칙은 위에서 설명 드렸습니다.
+두번째 인자로 ```javascriptfunction(fn, clsfn, bs){}```라는 괴상한 함수를 기술하고 있습니다.
+
+이건 공식이니 외우셔야 합니다. 더불어 3가지 인자의 의미도 알아야 합니다.!
+
+fn, clafn, bs
+
+
+#### # 정의함수 이해 심화 - fn
+```javascript
+bs.cls( 'Myclass',
+    function( fn, clsfn, bs ){
+        fn.firstPrototype = function(){  // fn의 실질적 활용
+             console.log('유후')
+        }
+    }
+)
+```
+function a(){}가 있을 경우 a.prototype['Test'] = function(){}과 같이
+prototype 정의를 자주합니다.
+
+bs로 생성할 객체의 prototype을 설정해 주기 위한 매개체가 바로 fn입니다.!
+
+bs.Myclass().프로토타입매서드()! 를 추가하고 싶을 경우 위와 같이 기술 할 수 있습니다.
+
+작성 후 나타나는 결과 아래와 같은 호스트 코드가 가능해 집니다.
+```javascript
+bs.Myclass().firstPrototype() // 유후
+```
+
+
+#### # 정의함수 이해 심화 - clsfn
+```javascript
+bs.cls('Myclass',
+    function(fn, clsfn, bs){
+        fn.firstPrototype=function(){console.log('유후')}
+        clsfn.staticMethod=function(){ // clsfn의 활용
+            console.log('스타틱유후')
+        }
+    }
+)
+```
+fn은 fn인데 정적 fn을 정의 해줄 수 있습니다.
+Static Method 구현을 위한 인자입니다.
+```javascript
+bs.Myclass.staticMethod () // 스타틱유후
+```
+
+
+#### # 정의함수 이해 심화– bs
+```javascript
+bs.cls( 'Myclass',
+    function(fn, clsfn, bs){
+        fn.firstPrototype = function(){console.log('유후')}
+        clsfn.staticMethod = function(){console.log('스타틱유후')}
+    }
+)
+```
+bs.cls로 클래스를 정의 하다 보면 정의 클래스 내부에서도 bs를 이용한 코드가 나오게 됩니다.
+
+이때 클래스 외부에 있는 bs를 그대로 이용하면 스코프를 타고 멀리 있는 bs를 이용하게 됩니다.
+
+이 비용을 줄이기 위해 bs 클래스내부로 bs를 잡아두는 스코프 세탁용입니다. (알고만 있으면 된다는!!!)
+
+
+#### # fn 이해의 심화
+```javascript
+bs.cls( 'Myclass',
+    function( fn, clsfn, bs ){
+    }
+)
+```
+bs.cls로 클래스를 기술하다 보면 아래와 같이 객체 생성 시점에서 어떠한 무언가를 기술하는 상황이 오게 됩니다.
+```javascript
+function a(){
+    this.a = 'A‘
+}
+```
+하지만 앞서 배운대로 라면 생성시에 무언가를 진행 할 수 있는 방법이 없는 사태를 맞이하게 됩니다.
+그래서 제공하는 약속이 있습니다.
+
+## 바로 fn.NEW!!
+```javascript
+bs.cls( 'Myclass',
+    function( fn, clsfn, bs ){
+        fn.NEW=function(key){
+             //첫번재 인자는 인스턴스 식별자로 사용되는 고정값입니다.
+             this.ID = Math.floor(Math.random()*10)
+        }
+    }
+)
+
+console.log( bs.Myclass().ID ) --> 생성시 정의된 10이내의 랜덤한 숫자가 방출!
+```
+
+###  bs.cls를 이용하여
+```
+1. 정적매서드(clsfn)를 만들고
+2. 프로토타입(fn)을 정의하고
+3. 생성자함수(fn.NEW)로 생성특성을 반영할 수 있게 되었습니다
+```
+그리고 이제 마지막 파괴자 함수와 함께 bs 캐시정책에 대해서 알아보겠습니다.
+
+
+#### # 캐시정책
+bs는 기본적으로 캐시 정책을 사용합니다.
+앞서 NEW함수의 첫번째 인자! 식별자 KEY라고 했습니다.
+```javascript
+fn.NEW=function( key ){}
+```
+fn.NEW의 첫번째 인자는 bs의 내부적인 캐시 Key로 활용됩니다.
+바로 ```javascriptbs.Dom('#test')```가 성립되는 이유! 입니다.  ```javascriptbs.Myclass(‘test’)```하면 ‘test’를 고유키로 객체관리를 하게 됩니다.
+
+그래서 ```javascriptbs.Myclass( ‘test’ )```를 생성하고 이를 변수에 담지 않고 ```javascriptbs.Myclass( ‘test’ )```를 통해서 호출 할 수 있습니다.
+
+
+#### #  bs 캐시정책과 파괴자 함수
+```javascript
+var a = bs.Myclass( 'bs_a') // bs_a라는 키값으로 생성된 Myclass 객체를 a라는 변수에 담음
+var b = bs.Myclass( 'bs_a' ) // bs_a라는 키값으로 조회된 Myclass 객체를 b라는 변수에 담음
+```
+위의 단 두 줄의 코드는 잘 살펴봐야 합니다.
+
+변수 a는 bs_a라는 키 값으로 생성된 객체를 담고 있습니다.
+
+변수 b에 담긴 객체는 새로 생성된 객체가 아니라 bs_a라는 키로 bs내부적으로 캐시 되어 있는 녀석을 찾아오게 됩니다.
+
+이것이 캐시정책!
+
+시각화를 해보면 아래와 같습니다.
+
+<img src="bsJS/0.5/cls/img/001.png">
+
+그럼 bs.Myclass(‘test’)로 잡혀있는 객체의 키와 bs내부적인 환경을 삭제하려면
+
+어떻게 해야 하는가!에 대한 고민이 생깁니다.
+
+## 이때 필요한 것이 바로 파괴자 함수입니다.
+
+파괴자 함수는 키와 매칭되는 객체의 캐시된 정보들을 모두 bs내부적으로 제거합니다.
+
+```javascript
+bs.cls( 'Myclass',
+    function( fn, clsfn, bs ){
+        fn[ '원하시는파괴자함수명' ] = function(){
+            this.END()
+            }
+        }
+)
+```
+
+cls를 정의하면 우리 눈에는 보이지 않았지만 ```javascriptfn.END()```가 정의되어 넘어오게 됩니다.
+
+파괴자 함수 구현은 ```javascriptfn.END()```를 덮어 쓰지 않고 원하시는 파괴자함수로 호출만 해줍니다.
+
+### 파괴자 함수 이해를 돕기 위한 예제는 아래와 같습니다.
+```javascript
+var a = bs.Myclass("bs_a")
+var b = bs.Myclass("bs_a")
+
+console.log( a ==b ) //가 성립됩니다.
+// 파괴자함수를 통해서 a에 잡혀있는 Myclass의 캐시를 지워보겠습니다.
+
+a.destroy() // 마치 변수 a에 잡혀있는 객체도 null이 될 것 같습니다만
+// 실제 객체는 사라지지 않고 bs.Myclass( "bs_a" ) bs 내부적으로 캐시만 삭제됩니다.
+// 그리하여 아래와 같은 코드가 성립됩니다.
+
+a.destroy()
+console.log( a != bs.Myclass( "bs_a" ) )
+```
+a에 담긴 객체는 'bs_a'를 통해 생성한 객체입니다.
+
+destroy를 통해 캐시만 삭제 합니다.
+
+다시```javascript bs.Myclass( 'bs_a' )```를 실행하면 'bs_a'라는 키가 내부적으로 없으므로 새로운 클래스를 생성하게 됩니다.
+
+즉 a에 담겨있는 오브젝트와 새로 생성한 오브젝트는 다르다고 판정할 수 있습니다.
+
+
+# 객체 생성시 캐시를 안하려면 어떻게?
+
+캐시정책을 사용하지 않으려면 @키를 사용하게 됩니다.
+
+@key를 사용하게 되면 bs내부적으로 키를 잡지 않는 상태로 객체를 생성하게됩니다.
+
+```javascript
+console.log(bs.Myclass("@bs_b")==bs.Myclass("@bs_b")) // false
+```
+가 성립됩니다.
+
+## 최종코드 전문
+```javascript
+<script>
+    bs(function(){
+// 클래스정의
+        bs.cls('Myclass', function(fn, clsfn, bs){
+//TODO 객체를 정의해나갈부분
+            fn.NEW=function(key){
+                this.ID = Math.floor(Math.random()*10)
+            }
+            fn.destroy = function(){ this.END() }
+            fn.firstPrototype = function(){console.log('유후')}
+            clsfn.staticProperty = function(){console.log('스타틱유후')}
+        })
+// 클래스 테스트
+        console.log( bs.Myclass( 'test' ) )
+        bs.Myclass( 'test' ).firstPrototype()
+        bs.Myclass.staticProperty()
+        console.log( bs.Myclass( 'test' ).ID )
+        var a = bs.Myclass( 'bs_a' )
+        var b = bs.Myclass( 'bs_a' )
+        console.log( a==b )
+        a.destroy()
+        console.log( a )
+        console.log( a!=bs.Myclass( 'bs_a' ) )
+        console.log(bs.Myclass('@bs_b')==bs.Myclass('@bs_b')) // false
+    })
+</script>
+```
+
+## cls 이해도 체크해보기!!!
+
+bs.cls의 사용자 정의 클래스에서의
+
+myID와, myPassword라는 프로퍼티를 가지게 하려면 어떻게 해야할까요?
+
+앞서 학습하신걸 토대로 구현을 할 수 있습니다.
+어떻게 하면될까요?
+
+차분히 생각해보신 스크롤을 넘겨보시기 바랍니다.
+
+
+
+```javascript
+//차분히 생각해보신 스크롤을 넘겨보시기 바랍니다.
+//차분히 생각해보신 스크롤을 넘겨보시기 바랍니다.
+//차분히 생각해보신 스크롤을 넘겨보시기 바랍니다.
+//차분히 생각해보신 스크롤을 넘겨보시기 바랍니다.
+//차분히 생각해보신 스크롤을 넘겨보시기 바랍니다.
+//차분히 생각해보신 스크롤을 넘겨보시기 바랍니다.
+//차분히 생각해보신 스크롤을 넘겨보시기 바랍니다.
+//차분히 생각해보신 스크롤을 넘겨보시기 바랍니다.
+//차분히 생각해보신 스크롤을 넘겨보시기 바랍니다.
+//차분히 생각해보신 스크롤을 넘겨보시기 바랍니다.
+//차분히 생각해보신 스크롤을 넘겨보시기 바랍니다.
+//차분히 생각해보신 스크롤을 넘겨보시기 바랍니다.
+//차분히 생각해보신 스크롤을 넘겨보시기 바랍니다.
+```
+# 정답은 fn.NEW를 활용하는 것입니다.
+```javascript
+fn.NEW = function( key, myID, myPassword){
+    this.myID = 값정의
+    this.myPassword = 값정의
+};
+
+var a = bs.Myclass("test")
+console.log(a.myID)
+console.log(a.myPassword)
+```
+
+
+# #마지막입니다. 당연하게도 bs클래스는 instanceOf를 지원합니다.
+```javascript
+var a = bs.Myclass("test")
+a.instanceOf == bs.Myclass
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
