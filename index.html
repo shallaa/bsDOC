@@ -92,8 +92,8 @@ bs(function(){
 		mobile ? bs.css( bs.Dom('#mob').S('@text') ) : bs.css( bs.Dom('#scr').S('@text') );
 
 		OPEN:
-		bs.Dom('#preloader').S(null),
-		bs.Dom('#stage').S( 'display', 'block' );
+		bs.Dom('#preloader').S(null),alert('1'),
+		bs.Dom('#stage').S( 'display', 'block' ),alert('2');
 
 		ROUTING:
 		uri.base = location.pathname, uri.base = uri.base.substr( uri.base.lastIndexOf('/') + 1 ) + '#!',
