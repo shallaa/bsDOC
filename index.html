@@ -144,7 +144,7 @@ bs(function(){
 	},
 	uri = function(v){location.href = uri.base + v;},
 	sorting = function( a, b ){return parseFloat(a.substring( 0, a.indexOf('.') )) - parseFloat(b.substring( 0, b.indexOf('.') ));},
-	contents = function(v){bs.Dom('#doc').S( 'html', 'hello mobile' /*bs.markdown(bs.local( contents.uri, v ))*/ );},
+	contents = function(v){bs.Dom('#doc').S( 'html', bs.markdown('hello mobile 2'/*bs.local( contents.uri, v )*/) );},
 	titles = function(v){return bs.trim(v.split('.')[1]);},
 	x = function(){return bs.Dom('<a class="nocache"> X</a>').S( 'cursor', 'pointer', 'down', nocache, 'this' );},
 	list = function(v){bs.Dom('@[data-path^=' + v + ']').S( 'cursor', 'pointer', 'down', jump, 'after', x );},
