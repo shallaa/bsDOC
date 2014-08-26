@@ -89,7 +89,7 @@ bs(function(){
 	STARTER:
 	var start = function(){
 		CSS: 
-		mobile ? bs.css( bs.Dom('#mob').S('@text') ) : bs.css( bs.Dom('#scr').S('@text') );
+		mobile ? bs.css( bs.Dom('#mob').S('@text') ), bs.log('hello mobile') : bs.css( bs.Dom('#scr').S('@text') ), bs.log('hello desktop');
 
 		OPEN:
 		bs.Dom('#preloader').S(null),
